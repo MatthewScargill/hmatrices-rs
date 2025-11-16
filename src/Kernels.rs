@@ -37,7 +37,7 @@ impl Kernel<2> for Helmholtz2D {
     type Scalar = Complex64; // This one needs to be complex
 
     // Green function eval method -- probably need to add new trait about G or dG 
-    fn eval(x: &[f64; 2], y: &[f64; 2]) -> f64 {
+    fn eval(x: &[f64; 2], y: &[f64; 2]) -> Complex64 {
         // bog standard
         let dx = x[0] - y[0];
         let dy = x[1] - y[1];
@@ -45,11 +45,11 @@ impl Kernel<2> for Helmholtz2D {
         let r = r2.max(1e-15).sqrt();
 
         // kr and hankel stuff needed
-        let kr = self.k * r;
+        // let kr = Self.k * r;
         // let h0 = hankel0_1(kr); find the fast hankel crate and implement 
         // make it return Complex64!!
         // figure out G or dG stuff for different Fredholm formulations
-
+        let h0 = Complex64::i(); // placeholder stuff to appease the compiler
         Complex64::i() * h0 * 0.25 // this is Fredholm 1 formulation with G
     }
 }

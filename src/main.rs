@@ -1,3 +1,9 @@
+mod kernels;
+use kernels::*;
+
 fn main() {
-    println!("this is where the code is going to go")
+    let x = [0.0_f64, 0.0];
+    let y = [3.0_f64, 0.0];
+    let val = Laplace2D::eval(&x, &y);
+    println!("Laplace Greens function = {}", val);
 }
