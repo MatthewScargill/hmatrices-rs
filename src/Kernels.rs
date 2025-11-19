@@ -5,24 +5,25 @@ use std::f64::consts::PI;
 // D is for dimension of the Kernel, will probably stick to 2 but want to get used to this conceptually
 pub trait Kernel<const D: usize> { 
     type Scalar; // return type
-    fn eval(x: &[f64; D], y: &[f64; D]) -> Self::Scalar; // generic 2 point eval returning a Scalar
+    fn eval(&self, x: &[f64; D], y: &[f64; D]) -> Self::Scalar; // generic 2 point eval returning a Scalar
 } // traits mean i can just call ::eval(x,y) no matter the kernel or dimension
 
 // main kernel public structures (keeping it 2D for now)
-pub struct Laplace2D;
-pub struct Helmholtz2D { pub k: f64 } //  associated wavenumber 
+pub struct Laplace2D; // simple 2D Laplace
+pub struct Helmholtz2D { pub wavenumber: f64, normal_deriv: bool}
 
-// new method for ease of setting k later on -- Helmholtz2D::new(3.02)
+
+// new method for ease of setting k later on -- Helmholtz2D::new(3.02, false) .. maybe add normal_deriv as a const at runtime
 impl Helmholtz2D {
-    pub fn new(k: f64) -> Self { Self {k}}
-}
+    pub fn new(wavenumber: f64, normal_deriv: bool) -> Self { Self {wavenumber, normal_deriv}}
+    }
 
 // implementing Kernel trait for Laplace2D struct
 impl Kernel<2> for Laplace2D {
     type Scalar = f64; // Laplace stays real so f64
 
     // Green function eval method
-    fn eval(x: &[f64; 2], y: &[f64; 2]) -> f64 {
+    fn eval( &self, x: &[f64; 2], y: &[f64; 2]) -> f64 {
         let dx = x[0] - y[0];
         let dy = x[1] - y[1];
         let r2 = dx*dx + dy*dy;
@@ -37,7 +38,7 @@ impl Kernel<2> for Helmholtz2D {
     type Scalar = Complex64; // This one needs to be complex
 
     // Green function eval method -- probably need to add new trait about G or dG 
-    fn eval(x: &[f64; 2], y: &[f64; 2]) -> Complex64 {
+    fn eval( &self, x: &[f64; 2], y: &[f64; 2]) -> Complex64 {
         // bog standard
         let dx = x[0] - y[0];
         let dy = x[1] - y[1];
@@ -47,9 +48,18 @@ impl Kernel<2> for Helmholtz2D {
         // kr and hankel stuff needed
         // let kr = Self.k * r;
         // let h0 = hankel0_1(kr); find the fast hankel crate and implement 
-        // make it return Complex64!!
-        // figure out G or dG stuff for different Fredholm formulations
-        let h0 = Complex64::i(); // placeholder stuff to appease the compiler
-        Complex64::i() * h0 * 0.25 // this is Fredholm 1 formulation with G
+
+
+        // decided to make the kernel eval require &self, now we separate G and dG inside the eval with a Bool
+        if self.normal_deriv {
+            // normal derivative of the 2d helmholtz green's function here
+            Complex64::i() * PI * r * 0.25
+        }
+
+        else {
+            // standard 2dH greens function
+            Complex64::i() * PI * r * 0.25 
+        }
+        
     }
 }
