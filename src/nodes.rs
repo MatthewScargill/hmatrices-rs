@@ -9,7 +9,7 @@ impl<const D: usize> Nodes<D> {
     
     // thinking the info gets sent in and then a Nodes structure is built from it here
     pub fn new(points: Vec<[f64; D]>) -> Self {
-        Self { points } // add method for weights and normals when we get there
+        Self { points} // add method for weights and normals when we get there
     }
 
     // right now just need to be able to pull out point info 
