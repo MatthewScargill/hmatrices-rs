@@ -38,5 +38,7 @@ fn main() {
     let idx = [0,2];
     let bboxtest = nodetest.bbox_from_indices(&idx);
 
-    println!("min values of the bounding box = {:?}", bboxtest.max);
+    println!("min values of the bounding box = {:?}", bboxtest.min);
+    println!("centre of the bounding box = {:?}", bboxtest.centre());
+
 }

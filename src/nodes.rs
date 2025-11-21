@@ -42,6 +42,19 @@ impl <const D: usize> BBox<D> {
         }
         Self { min, max} 
     }
+
+    pub fn centre(&self) -> Vec<f64>{ 
+
+        let mut centre: Vec<f64> = Vec::new();
+        let dim = D as f64;
+
+        for d in 0..D {
+            let temp = (self.min[d] + self.max[d])/ dim ;
+            centre.push(temp);
+        }
+        centre 
+    }
+
 }
 
 // rehash some stuff as paper says from indices is the way to go 
