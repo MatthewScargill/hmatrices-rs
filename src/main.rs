@@ -33,5 +33,10 @@ fn main() {
         }
     }
 
-    constructor(&nodetest, Laplace2D)
+    constructor(&nodetest, Laplace2D);
+
+    let idx = [0,2];
+    let bboxtest = nodetest.bbox_from_indices(&idx);
+
+    println!("min values of the bounding box = {:?}", bboxtest.max);
 }
