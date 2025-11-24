@@ -28,7 +28,7 @@ fn main() {
                 let coord1 = nodes.point(i);
                 let coord2 = nodes.point(j);
                 let laptest = greensfunction.eval(&coord1, &coord2);
-                println!("{}th row, {}th column, cell value = {:?}", i, j, 7);
+                println!("{}th row, {}th column, cell value = {:?}", i, j, laptest);
             }
         }
     }
