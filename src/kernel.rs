@@ -30,14 +30,16 @@ impl Kernel<2> for Laplace {
 // implementing Kernel trait for 3D laplace struct
 impl Kernel<3> for Laplace {
 
-    // Green function eval method
-    fn eval( &self, x: &[f64; 3], y: &[f64; 3]) -> Complex64 {
-        let dx: f64 = x[0] - y[0];
-        let dy: f64 = x[1] - y[1];
-        let r2: f64 = dx*dx + dy*dy;
+    fn eval(&self, x: &[f64; 3], y: &[f64; 3]) -> Complex64 {
+        let dx = x[0] - y[0];
+        let dy = x[1] - y[1];
+        let dz = x[2] - y[2];
+        let r2 = dx*dx + dy*dy + dz*dz;
         // will need better x=y handling but for now call it e-15
-        let r = r2.max(1e-15).sqrt();
-        Complex { re: (- (1.0 / (2.0 * std::f64::consts::PI)) * r.ln() ), im: 0.0 } // fix this
+        let r = r2.max(1e-15).sqrt(); 
+
+        // 3D Laplace Green's function: 1 / (4 pi r)
+        Complex64 { re: 1.0 / (4.0 * std::f64::consts::PI * r), im: 0.0 }
     }
 }
 
