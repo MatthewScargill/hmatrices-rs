@@ -1,5 +1,6 @@
 pub mod kernel;
-pub mod nodes;
+pub mod node;
+pub mod cluster;
 
 pub use kernel::{Kernel, Laplace, Helmholtz};
-pub use nodes::{Nodes, BBox};
+pub use node::{Nodes, BBox};

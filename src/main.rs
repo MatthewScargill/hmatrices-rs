@@ -1,6 +1,3 @@
-//mod kernels;
-//use kernels::*;
-
 use hmats_rs::*;
 
 fn main() {
