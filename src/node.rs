@@ -2,7 +2,7 @@
 pub struct Nodes<const D: usize> {
     pub points: Vec<[f64; D]>,
     // pub weights: Vec<[f64; 1]>,
-    // pub normals: Vec<[f64; D]>, -- all this information is going to be filled in from the julia code
+    // pub normals: Vec<[f64; D]>, 
 }
 
 impl<const D: usize> Nodes<D> {
