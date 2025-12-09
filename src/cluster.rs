@@ -36,6 +36,13 @@ impl<const D: usize> ClusterTree<D> {
         tree
     }
 
+    // dumb tree build tester
+    pub fn print(&self) {
+        for node in &self.nodes {
+            println!("level: {}", &node.level)
+        }
+    }
+
     fn build_node(&mut self, nodes: &Nodes<D>, indices: Vec<usize>, level: u32, leaf_size: usize) -> usize { 
 
         // create a bounding box of given indices
