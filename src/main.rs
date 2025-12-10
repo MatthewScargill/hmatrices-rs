@@ -8,11 +8,11 @@ fn main() {
     println!("Laplace Greens function = {:?}", val.re); // can chuck .re on it when using laplace 
 
     // trying out the nodes 
-    let mut testpoints = Vec::new();
-    testpoints.push([0.0, 0.0, 0.3]);
+    let mut testpoints: Vec<[f64; 3]> = Vec::new();
+    testpoints.push([0.0, 0.0, 2.0]);
     testpoints.push([0.4, 0.2, 0.3]);
     testpoints.push([0.5, 0.5, 0.3]);
-    testpoints.push([0.0, 0.5, 0.3]);
+    testpoints.push([0.0, 1.0, 0.]);
 
     let nodetest = Nodes::new(testpoints);
     println!("ith node value = {:?}", nodetest.points[2]);
@@ -33,9 +33,10 @@ fn main() {
     let idx = [0,1,3];
     let bboxtest = nodetest.bbox_from_indices(&idx);
 
+
     println!("min values of the bounding box = {:?}", bboxtest.min);
     println!("centre of the bounding box = {:?}", bboxtest.centre());
 
-    let testtree = ClusterTree::build(&nodetest, 1);
+    let testtree = ClusterTree::build_tree(&nodetest, 1);
     testtree.print();
 }
