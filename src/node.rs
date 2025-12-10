@@ -50,7 +50,7 @@ impl <const D: usize> BBox<D> {
         let dim = D as f64;
 
         for d in 0..D {
-            let centre_i = (self.min[d] + self.max[d])/ dim ;
+            let centre_i: f64 = (self.min[d] + self.max[d])/ dim ;
             centre.push(centre_i);
         }
         centre 
@@ -58,8 +58,8 @@ impl <const D: usize> BBox<D> {
 
     pub fn bbox_distance(source_bbox: &BBox<D>, target_bbox: &BBox<D>) -> f64 {
         
-        let source_centre = source_bbox.centre();
-        let target_centre = target_bbox.centre();
+        let source_centre: Vec<f64> = source_bbox.centre();
+        let target_centre: Vec<f64> = target_bbox.centre();
         let distance: f64 = euclidean(&source_centre, &target_centre);
 
         distance
