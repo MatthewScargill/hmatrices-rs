@@ -44,9 +44,9 @@ impl BlockTree {
             let source_bbox: &BBox<D> = &source_cluster.bbox;
 
             // proximity check
-            let is_far: bool = is_far(&source_bbox, &target_bbox, max_dist);
+            let are_far: bool = is_far(source_bbox, target_bbox, max_dist);
 
-            // check if blocks are leaves or not (as will only make block if both are leaves)
+            // check if blocks are leaves 
             let target_is_leaf: bool = target_cluster.children.is_none();
             let source_is_leaf: bool = source_cluster.children.is_none();
 
@@ -56,7 +56,7 @@ impl BlockTree {
             // close but one is not a leaf -- recursion into smaller blocks like in cluster
             
             // filter for blocks far away from each other 
-            if is_far {
+            if are_far {
                 let id: usize = self.nodes.len();
                 self.nodes.push(BlockNode {target_index, source_index, children: None, block_type: BlockType::Far});
                 return id
@@ -107,12 +107,27 @@ impl BlockTree {
                 }
                 // lovely lovely spacetime crunch
 
+                // return number of BlockNodes created from above (target_indices, source_indices) - 1
+                let id: usize = self.nodes.len(); // taken before last push so can be used as index
+
                 // add BlockNode to Blocktree 
                 self.nodes.push(BlockNode { target_index, source_index, children: Some(child_indices), block_type: BlockType::Near });
 
-                // return number of BlockNodes created from above (target_indices, source_indices
-                let id: usize = self.nodes.len();
                 id
             }
+        }
+
+        pub fn build_tree<const D: usize>(target_tree: &ClusterTree<D>, source_tree: &ClusterTree<D>, max_dist: f64) -> Self {
+
+            let mut tree: BlockTree = BlockTree { nodes: Vec::new(), id: 0 };
+
+            // the root Clusternode is always the last index of ClusterTree
+            let target_index: usize = target_tree.id;
+            let source_index: usize = source_tree.id;
+
+            let id: usize = tree.build_blocks(target_index, source_index, target_tree, source_tree, max_dist);
+
+            tree.id = id;
+            tree
         }
 }

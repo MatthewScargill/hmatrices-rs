@@ -57,11 +57,12 @@ impl<const D: usize> ClusterTree<D> {
         let right_id: usize = self.build_nodes(nodes, right_indices, level + 1, leaf_size);
         // spacetime scrunches up here
 
+        // return total number of produced nodes - 1
+        let id: usize = self.nodes.len(); // taken before last push so can be used as index
+
         // add this ClusterNode to ClusterTree, children ClusterNodes also added recursively
         self.nodes.push(ClusterNode { bbox, indices: sorted, children: Some([left_id, right_id]), level});
         
-        // return total number of produced nodes 
-        let id: usize = self.nodes.len();
         id 
     }
 
