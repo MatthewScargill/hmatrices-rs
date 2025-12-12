@@ -1,5 +1,4 @@
 use num_complex::Complex64;
-
 use crate::kernel::Kernel;
 use crate::cluster::ClusterTree;
 use crate::block::BlockTree;
@@ -44,6 +43,10 @@ pub struct HMatrix<const D: usize, K: Kernel<D>> {
 
     // blocktree backbone
     pub block_tree: BlockTree,
+
+    // actual Blocks 
+    pub blocks: Vec<BlockStorage>,
+
     // kernel we want to use 
     pub kernel: K,
 
@@ -53,7 +56,19 @@ pub struct HMatrix<const D: usize, K: Kernel<D>> {
     // dimensions of the matrix?
     pub n_rows: usize,
     pub n_cols: usize,
-
-    // ofc need to figure out how to store actual blocks 
     
 }
+
+// Dense and ACA block construction functions -- in hmatrix impl
+// blocks function to call both of above to create hmatrix -- in hmatrix impl
+// both have to be in hmatrix impl to have access to Kernel and callable as a .construct
+
+// need to implement Ax = y matvec product, for usability but also Krylov and stuff like that 
+// min singular value with krylov or otherwise, determinant if possible, other cool and awesome and possibly tiring things that matrices do
+
+
+// then maybe some practical storage info like vs a full resolution matrix
+// some visualisations for the readme might be nice 
+// maybe I'll even write C bindings 
+
+// nothing will top the thrill of recursion working
