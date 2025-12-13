@@ -1,6 +1,6 @@
 use num_complex::Complex64;
 use crate::kernel::Kernel;
-use crate::cluster::ClusterTree;
+// use crate::cluster::ClusterTree;
 use crate::block::BlockTree;
 
 
@@ -34,7 +34,6 @@ pub struct LowRankBlock {
     pub u: Vec<Complex64>, // len(rows) x rank matrix
     pub v: Vec<Complex64>, // len(col) x rank matrix 
     // row major as above 
-    
 }
 
 

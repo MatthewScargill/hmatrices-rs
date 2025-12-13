@@ -1,8 +1,6 @@
 use crate::node::BBox;
 use crate::cluster::{ClusterNode, ClusterTree};
 
-// convert ClusterTree to BlockTree with admissibility checks 
-
 // categorise as near for full resolution and far for approximation
 pub enum BlockType {
     Near, // dense
@@ -14,8 +12,8 @@ pub enum BlockType {
  
  // source and target will later translate to column and row 
 pub struct BlockNode{
-    pub target_index: usize, // index of Cluster node in source Ctree
-    pub source_index: usize, // index of Cluster node in target Ctree
+    pub target_index: usize, // index of Cluster node in target Ctree
+    pub source_index: usize, // index of Cluster node in source Ctree
     pub children: Option<Vec<usize>>, // normally another node but use Option as could be None
     // the above is going to take some sorting but this is the idea
     pub block_type: BlockType // assigned to leaf blocks 
@@ -28,7 +26,7 @@ pub struct BlockTree {
 
 pub fn is_far<const D: usize>(source_bbox: &BBox<D>, target_bbox: &BBox<D>, max_dist: f64) -> bool {
     let dist: f64 = BBox::bbox_distance(source_bbox, target_bbox);
-    dist < max_dist // True if close enough for full resolution
+    dist > max_dist // True if too far for full resolution
 }
 
 impl BlockTree {
@@ -121,7 +119,6 @@ impl BlockTree {
 
             let mut tree: BlockTree = BlockTree { nodes: Vec::new(), id: 0 };
 
-            // the root Clusternode is always the last index of ClusterTree
             let target_index: usize = target_tree.id;
             let source_index: usize = source_tree.id;
 
