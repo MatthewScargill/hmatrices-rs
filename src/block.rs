@@ -1,6 +1,12 @@
 use crate::node::BBox;
 use crate::cluster::{ClusterNode, ClusterTree};
 
+
+// comments:
+// - sometimes i wonder if we need the full block tree and node just a collection of the block leaves 
+// the only thing i can think of is changing the max rank on the fly? maybe for k scanning that would be good?
+// then again matrix methods might require the full tree, either way i like it, let's keep it moving
+
 // categorise as near for full resolution and far for approximation
 pub enum BlockType {
     Near, // dense

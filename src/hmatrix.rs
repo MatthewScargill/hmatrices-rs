@@ -1,7 +1,8 @@
 use num_complex::Complex64;
 use crate::kernel::Kernel;
-// use crate::cluster::ClusterTree;
-use crate::block::BlockTree;
+use crate::node::Nodes;
+use crate::cluster::{ClusterTree, ClusterNode};
+use crate::block::{BlockTree, BlockType};
 
 
 // turning BlockTree into that sweet sweet Hmatrix 
@@ -55,7 +56,6 @@ pub struct HMatrix<const D: usize, K: Kernel<D>> {
     // dimensions of the matrix?
     pub n_rows: usize,
     pub n_cols: usize,
-    
 }
 
 // Dense and ACA block construction functions -- in hmatrix impl
@@ -71,3 +71,47 @@ pub struct HMatrix<const D: usize, K: Kernel<D>> {
 // maybe I'll even write C bindings 
 
 // nothing will top the thrill of recursion working
+
+// basic idea of matrix assembly, need to think about overall pipeline though, probably will have to whittle down the inputs
+impl<const D: usize, K: Kernel<D>> HMatrix<D, K> {
+
+    pub fn assemble(target_nodes: &Nodes<D>, source_nodes: &Nodes<D>,
+        target_tree: &ClusterTree<D>, source_tree: &ClusterTree<D>,
+        block_tree: BlockTree, kernel: K) -> Self {
+
+            // rows and columns from nodes
+            let n_rows: usize = target_nodes.points.len();
+            let n_cols: usize = source_nodes.points.len();
+
+            // set up blocks
+            let mut blocks: Vec<BlockStorage> = Vec::new();
+
+            // filter through the block tree for leaves, pontificating on this found in block.rs
+            // thanks compsudoku
+            for block in block_tree.nodes.iter().filter(|node| node.children.is_none()) {
+
+                // extract global node indices from block associated clusternodes
+                let target_node: &ClusterNode<D> = &target_tree.nodes[block.target_index];
+                let source_node: &ClusterNode<D> = &source_tree.nodes[block.source_index];
+                let rows: Vec<usize> = target_node.indices.clone();
+                let cols: Vec<usize> = source_node.indices.clone();
+
+                // sort into resolution function based off of block type 
+                let stored_block: BlockStorage = match block.block_type {
+                    BlockType::Near => {
+                        // this is purely hypothetical mind you
+                        let dense: DenseBlock = Self::build_dense_block(target_nodes, source_nodes, &rows, &cols, &kernel);
+                        BlockStorage::Dense(dense)
+                    }
+                    BlockType::Far => {
+                        let lowrank: LowRankBlock = Self::build_LR_block(target_nodes, source_nodes, &rows, &cols, &kernel);
+                        BlockStorage::LowRank(lowrank)
+                    }
+                };
+                blocks.push(stored_block);
+            }
+
+            Self { block_tree, blocks, kernel, n_rows, n_cols}
+    }
+    
+}
