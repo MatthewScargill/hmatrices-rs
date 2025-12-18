@@ -46,7 +46,7 @@ impl <const D: usize> BBox<D> {
 
     pub fn centre(&self) -> Vec<f64>{ 
 
-        let mut centre: Vec<f64> = Vec::new();
+        let mut centre: Vec<f64> = Vec::with_capacity(D);
         let dim: f64 = D as f64;
 
         for d in 0..D {
@@ -54,6 +54,13 @@ impl <const D: usize> BBox<D> {
             centre.push(centre_i);
         }
         centre 
+    }
+
+    pub fn prox_dims(&self) -> Vec<f64> {
+        let mut test = Vec::new();
+        test.push(2.3);
+        test.push(1.2);
+        test
     }
 
     pub fn bbox_distance(source_bbox: &BBox<D>, target_bbox: &BBox<D>) -> f64 {

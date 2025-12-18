@@ -2,7 +2,7 @@ use distances::vectors::euclidean;
 use num_complex::{Complex, Complex64};
 use std::f64::consts::{PI,E};
 use scilib::math::bessel::*; // hankel function
-use num_complex::ComplexFloat; // complex exponent 
+use num_complex::ComplexFloat; // complex exponents
 
 // Kernels saved as traits for independence
 pub trait Kernel<const D: usize> { 

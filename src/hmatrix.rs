@@ -84,7 +84,7 @@ impl<const D: usize, K: Kernel<D>> HMatrix<D, K> {
             let n_cols: usize = source_nodes.points.len();
 
             // set up blocks
-            let mut blocks: Vec<BlockStorage> = Vec::new();
+            let mut blocks: Vec<BlockStorage> = Vec::new(); // can this be preallocated
 
             // filter through the block tree for leaves, pontificating on this found in block.rs
             // thanks compsudoku
