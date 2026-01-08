@@ -35,6 +35,29 @@ impl<const D: usize> Nodes<D> {
     }
 }
 
+// this template can be used across all files
+#[cfg(test)] // don't compile at runtime
+mod node_struct_test { // all need different names for each struct
+    use super::*; // calls all the file imports
+
+    #[test] // call it a test
+    fn newtest() { // tests for each function + new names
+        let testpoints = vec![
+            [0.0, 0.0, 2.0],
+            [0.4, 0.2, 0.3],
+            [0.5, 0.5, 0.3],
+            [0.0, 1.0, 0.0],
+        ];
+
+        let _nodes = Nodes::new(testpoints);
+
+        assert_eq!(4, 4); // needs to return a bool 
+    }
+
+    // add more tests here
+}
+
+
 // Bounding boxes are used to subdivide Nodes and later provide notion of distance for admissibility in block.rs
 #[derive(Debug, Clone, Copy)] 
 pub struct BBox<const D: usize> {
