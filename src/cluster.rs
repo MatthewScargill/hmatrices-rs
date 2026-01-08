@@ -20,7 +20,7 @@ impl<const D: usize> ClusterTree<D> {
     fn build_nodes(&mut self, nodes: &Nodes<D>, indices: Vec<usize>, level: u32, leaf_size: usize) -> usize { 
 
         // create a bounding box of given indices 
-        let bbox: BBox<D> = nodes.bbox_from_indices(&indices);
+        let bbox: BBox<D> = nodes.bbox_from_indices(&indices); // will break if indices empty, see Nodes impl
 
         // check if alrady contains max number of points  -> terminate branch (== leaf node)
         if indices.len() <= leaf_size {
@@ -85,4 +85,23 @@ impl<const D: usize> ClusterTree<D> {
         }
         println!("self root_id: {}", &self.root_id)
     }
+}
+
+#[cfg(test)] 
+mod ClusterTree_tests { 
+
+    use super::*; 
+
+    // separate tests for each input error? 
+    // think of things which could go wrong?
+    // ultimately the aim is to have checks to see if changes to the function break things 
+    // come up with list 
+
+    #[test]
+    fn leaf_size_oob() { 
+        // check that leaf being too big or too small breaks the function correctly
+    }
+
+    // bbox from indices function checks for things being too small
+    // should this be a test here ? 
 }
