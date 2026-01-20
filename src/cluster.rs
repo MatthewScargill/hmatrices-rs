@@ -29,16 +29,14 @@ impl<const D: usize> ClusterTree<D> {
             return root_id;
         }
 
-        // finding dim and length of side to split down
-        let mut longest_dim: usize = 0;
-        let mut longest_len: f64 = 0.0;
-        for d in 0..D {
-            let len: f64 = bbox.max[d] - bbox.min[d];
-            if len > longest_len {
-                longest_len = len;
-                longest_dim = d; 
-            }
-        }
+        // finding longest dim to split down
+        let longest_dim: usize = (0..D) // range 
+            .max_by(|&a, &b| { // compare dims borrowed from longest_dims
+                let len_a: f64 = bbox.max[a] - bbox.min[a]; 
+                let len_b: f64 = bbox.max[b] - bbox.min[b];
+                len_a.partial_cmp(&len_b).unwrap() // return ordering 
+            })
+            .unwrap();
 
         let mut sorted: Vec<usize> = indices;
         sorted.sort_by(|&i, &j| {
