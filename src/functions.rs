@@ -1,7 +1,7 @@
-use crate::kernels::Kernel;
-use crate::nodes::Nodes;
-use crate::cluster::{ClusterTree, ClusterNode};
-use crate::block::{BlockTree, BlockType};
+// use crate::kernels::Kernel;
+// use crate::nodes::Nodes;
+// use crate::cluster::{ClusterTree, ClusterNode};
+// use crate::block::{BlockTree, BlockType};
 
 // place for main callables which just take in nodes, kernels, etc
 
@@ -21,7 +21,7 @@ pub fn cardioid_nodes(n: usize) -> Vec<[f64; 2]> {
 
     let mut pts = Vec::with_capacity(n);
     for i in 0..n {
-        let theta = 2.0 * PI * (i as f64) / (n as f64);
+        let theta: f64 = 2.0 * PI * (i as f64) / (n as f64);
         let r: f64 = 1.0 - theta.cos();
         let x: f64 = r * theta.cos();
         let y: f64 = r * theta.sin();

@@ -1,5 +1,4 @@
 use hmats_rs::*;
-use scilib::constant::C;
 
 fn main() {
     const D: usize=2; //dimension needs to be set early on in computation as a const for openess -- see kenel definition
@@ -38,7 +37,7 @@ fn main() {
     constructor(&card_nodes, Helmholtz{wavenumber: 3.0});
     println!("-------------------");
     //constructor(&card_nodes, Laplace);
-    let idx = [0,1,3];
+    // let idx = [0,1,3];
     //let bboxtest: BBox<D> = nodetest.bbox_from_indices(&idx);
 
 
