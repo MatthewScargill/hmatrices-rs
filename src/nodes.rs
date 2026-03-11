@@ -1,9 +1,9 @@
 use distances::vectors::euclidean;
 
-// Nodes structure to hold points (and later boundary data in the case of dG problems)
 pub struct Nodes<const D: usize> {
     pub points: Vec<[f64; D]>,
     pub len: usize,
+    // following is for normal derivative formulation of Helmholtz as and when
     // pub weights: Vec<[f64; 1]>,
     // pub normals: Vec<[f64; D]>, 
 }

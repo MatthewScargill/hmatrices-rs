@@ -9,7 +9,7 @@ pub trait Kernel<const D: usize> {
     fn eval(&self, x: &[f64; D], y: &[f64; D]) -> Complex64; // require generic 2 point eval returning a Complex64
 }
 
-// ---------------- LAPLACE KERNEL ----------------------
+// ---------------- LAPLACE KERNELS ----------------------
 pub struct Laplace; 
 
 impl<const D: usize> Kernel<D> for Laplace {
@@ -28,7 +28,8 @@ impl<const D: usize> Kernel<D> for Laplace {
 
 // ------------------ HELMHOLTZ KERNELS ------------------
 
-// ----- Standard ---------
+// ----- Standard --------- 
+// (normal derivative version coming tbd, would require Nodes overhaul)
 
 pub struct Helmholtz { pub wavenumber: f64}
 
