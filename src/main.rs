@@ -18,12 +18,12 @@ fn main() {
     println!("ith node value = {:?}", nodetest.points[2]);
 
 
-    let cn = cardioid_nodes(2);
+    let cn = cardioid_nodes(5);
     let card_nodes = Nodes::new(cn);
     
 
     
-    fn constructor(nodes: &Nodes<D>, greensfunction: impl Kernel<D>) { // accepts anything with Kernel trait
+    fn constructor(nodes: Nodes<D>, greensfunction: impl Kernel<D>) { // accepts anything with Kernel trait
         let len: usize = nodes.len;
         for i in 0..len as usize {
             for j in 0..len as usize {
@@ -35,7 +35,7 @@ fn main() {
         }
     }
 
-    constructor(&card_nodes, Helmholtz{wavenumber: 3.0});
+    constructor(card_nodes, Helmholtz{wavenumber: 3.0});
     println!("-------------------");
     //constructor(&card_nodes, Laplace);
     // let idx = [0,1,3];

@@ -32,7 +32,7 @@ impl<const D: usize> Kernel<D> for Laplace {
 
 pub struct Helmholtz { pub wavenumber: f64}
 
-// "new" method for ease of setting k -- eg. Helmholtz::new(3.02)
+// "new" method for ease of setting k -- eg. HK = Helmholtz::new(3.02), then can call HK wherever down the line
 impl Helmholtz { pub fn new(wavenumber: f64) -> Self { Self {wavenumber}}}
 
 impl<const D: usize> Kernel<D> for Helmholtz {
@@ -56,54 +56,3 @@ impl<const D: usize> Kernel<D> for Helmholtz {
         else { panic!()} // must be better way of doing this, maybe in Nodes new impl
     }
 }
-
-// beyond this is not yet working, need clearer picture of nodes structure before willing to put anything down
-// ------- Normal Derivative ----------
-
-//pub struct HelmholtzNormal { pub wavenumber: f64} 
-//
-//// new method for ease of setting k -- eg. HelmholtzNormal::new(3.02)
-//impl HelmholtzNormal {
-    //pub fn new(wavenumber: f64) -> Self { Self {wavenumber}}
-    //} // only really important for multiple calls per k
-//
-//// implementing Kernel trait for 2D HelmholtzNormal
-//impl Kernel<2> for HelmholtzNormal {
-//
-    //// Green function eval method 
-    //fn eval( &self, x: &[f64; 2], y: &[f64; 2]) -> Complex64 {
-        //// bog standard
-        //let dx = x[0] - y[0];
-        //let dy = x[1] - y[1];
-        //let r2 = dx*dx + dy*dy;
-        //let r = r2.max(1e-15).sqrt();
-//
-        //// kr and hankel stuff needed
-        //// let kr = Self.k * r;
-        //// let h0 = hankel0_1(kr); find the fast hankel crate and implement 
-//
-        //Complex64::i() * PI * r * 0.25 
-//        
-    //}
-//}
-
-// implementing Kernel trait for 3D Helmholtz
-//impl Kernel<3> for HelmholtzNormal {
-//
-    //// Green function eval method -- probably need to add new trait about G or dG 
-    //fn eval( &self, x: &[f64; 3], y: &[f64; 3]) -> Complex64 {
-        //// bog standard
-        //let dx = x[0] - y[0];
-        //let dy = x[1] - y[1];
-        //let dz = x[2] - y[2];
-        //let r2 = dx*dx + dy*dy + dz*dz;
-        //let r = r2.max(1e-15).sqrt();
-//
-        //// kr and hankel stuff needed
-        //// let kr = Self.k * r;
-        //// let h0 = hankel0_1(kr); find the fast hankel crate and implement 
-//
-        //Complex64::i() * PI * r * 0.25 
-//        
-    //}
-//}
