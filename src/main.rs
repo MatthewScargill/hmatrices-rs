@@ -18,14 +18,15 @@ fn main() {
     println!("ith node value = {:?}", nodetest.points[2]);
 
 
-    let cn = cardioid_nodes(30);
+    let cn = cardioid_nodes(2);
     let card_nodes = Nodes::new(cn);
-
+    
 
     
     fn constructor(nodes: &Nodes<D>, greensfunction: impl Kernel<D>) { // accepts anything with Kernel trait
-        for i in 0..30 as usize {
-            for j in 0..30 as usize {
+        let len: usize = nodes.len;
+        for i in 0..len as usize {
+            for j in 0..len as usize {
                 let coord1 = nodes.points[i];
                 let coord2 = nodes.points[j];
                 let laptest = greensfunction.eval(&coord1, &coord2);

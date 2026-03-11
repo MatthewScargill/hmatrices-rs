@@ -3,6 +3,7 @@ use distances::vectors::euclidean;
 // Nodes structure to hold points (and later boundary data in the case of dG problems)
 pub struct Nodes<const D: usize> {
     pub points: Vec<[f64; D]>,
+    pub len: usize,
     // pub weights: Vec<[f64; 1]>,
     // pub normals: Vec<[f64; D]>, 
 }
@@ -12,7 +13,8 @@ impl<const D: usize> Nodes<D> {
     // create Nodes from "standard" (Vec<[f64; D]>) points
     pub fn new(points: Vec<[f64; D]>) -> Self {
         assert!(!points.is_empty());
-        Self { points} 
+        let len: usize = points.len();
+        Self { points, len} 
         // add method for weights and normals if/when dG implemented
     }
 
