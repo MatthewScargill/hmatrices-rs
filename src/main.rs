@@ -55,37 +55,39 @@ fn main() {
     // creating dynamic nodes as top level type to interact with top level functions
     let examplenodes = DynamicNodes::D2(Nodes::new(ecn)); // this should be its own function in nodes 
     // what kind of kernel do we fancy 
-    let kernelfunc = Laplace;
+    let kernelfunc = Helmholtz{wavenumber:3.0};
 
-    fn toplevelconstructor(nodes: &DynamicNodes, greensfunction: impl Kernel<D>) {
+    fn toplevelconstructor_impl<const D: usize, K>(nodes: &Nodes<D>, greensfunction: &K)
+    where
+        K: Kernel<D>,
+    {
+    let len = nodes.len;
+
+    for i in 0..len {
+        for j in 0..len {
+            let coord1 = nodes.points[i];
+            let coord2 = nodes.points[j];
+            let val = greensfunction.eval(&coord1, &coord2);
+
+            println!(
+                "{}th row, {}th column, cell value = {:?}",
+                i, j, val
+                );
+        }
+    }
+    }
+
+    fn toplevelconstructor<K>(nodes: &DynamicNodes, greensfunction: &K)
+    where
+        K: Kernel<2> + Kernel<3>,
+    {
         match nodes {
-            DynamicNodes::D2(Nodes) => {
-                let len: usize = Nodes.len;
-                for i in 0..len as usize {
-                    for j in 0..len as usize {
-                        let coord1 = Nodes.points[i];
-                        let coord2 = Nodes.points[j];
-                        let laptest = greensfunction.eval(&coord1, &coord2);
-                        println!("{}th row, {}th column, cell value = {:?}", i, j, laptest);
-                    }
-                }
-            }
-
-            DynamicNodes::D3(Nodes) => {
-                let len: usize = Nodes.len;
-                for i in 0..len as usize {
-                    for j in 0..len as usize {
-                        let coord1 = Nodes.points[i];
-                        let coord2 = Nodes.points[j];
-                        let laptest = Laplace.eval(&coord1, &coord2);
-                        println!("{}th row, {}th column, cell value = {:?}", i, j, laptest);
-                    }
-                }
-            }
+            DynamicNodes::D2(nodes) => toplevelconstructor_impl::<2, K>(nodes, greensfunction),
+            DynamicNodes::D3(nodes) => toplevelconstructor_impl::<3, K>(nodes, greensfunction),
         }
     }
 
-    toplevelconstructor(&examplenodes, kernelfunc);
+    toplevelconstructor(&examplenodes, &kernelfunc);
 
     // ----------------------------------
 
