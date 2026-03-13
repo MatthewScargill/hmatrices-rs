@@ -1,4 +1,4 @@
-use hmats_rs::*;
+use hmats_rs::{cluster::DynamicClusterTree, nodes::DynamicNodes, *};
 
 fn main() {
     const D: usize=2; //dimension needs to be set early on in computation as a const for openess -- see kenel definition
@@ -19,11 +19,9 @@ fn main() {
 
 
     let cn = cardioid_nodes(5);
-    let card_nodes = Nodes::new(cn);
+    let card_nodes = DynamicNodes::D2(Nodes::new(cn));
     
-
-    
-    fn constructor(nodes: Nodes<D>, greensfunction: impl Kernel<D>) { // accepts anything with Kernel trait
+    fn constructor(nodes: &Nodes<D>, greensfunction: impl Kernel<D>) { // accepts anything with Kernel trait
         let len: usize = nodes.len;
         for i in 0..len as usize {
             for j in 0..len as usize {
@@ -34,8 +32,11 @@ fn main() {
             }
         }
     }
+    
 
-    constructor(card_nodes, Helmholtz{wavenumber: 3.0});
+
+
+    constructor(&card_nodes, Helmholtz{wavenumber: 3.0});
     println!("-------------------");
     //constructor(&card_nodes, Laplace);
     // let idx = [0,1,3];
@@ -45,10 +46,25 @@ fn main() {
     //println!("min values of the bounding box = {:?}", bboxtest.min);
     //println!("centre of the bounding box = {:?}", bboxtest.centre());
 
-    //let testclustertree: ClusterTree<D> = ClusterTree::build_tree(&nodetest, 1);
 
-    //let _testblocktree: BlockTree = BlockTree::build_tree(&testclustertree, &testclustertree, 0.4);
+    fn exampletoplevel(dn: &DynamicNodes, ls: usize) -> DynamicClusterTree{
+        match dn {
+            DynamicNodes::D2(Nodes) => {
+                let tree: ClusterTree<2> = ClusterTree::build_tree(Nodes, 1);
+                DynamicClusterTree::D2(tree)
+            }
+            DynamicNodes::D3(Nodes) => {
+                let tree: ClusterTree<3> = ClusterTree::build_tree(Nodes, 1);
+                DynamicClusterTree::D3(tree)
+            }
+        }
+    }
+    //let testclustertree: ClusterTree<D> = ClusterTree::build_tree(&card_nodes, 1);
 
-    //testclustertree.print();
+    let testclustertree = exampletoplevel(&card_nodes, 1);
+
+    let _testblocktree: BlockTree = BlockTree::build_tree(&testclustertree, &testclustertree, 0.4);
+
+    testclustertree.print();
 
 }

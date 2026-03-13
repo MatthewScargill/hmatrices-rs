@@ -14,6 +14,7 @@ pub struct Laplace;
 
 impl<const D: usize> Kernel<D> for Laplace {
 
+    #[inline(always)]
     fn eval( &self, x: &[f64; D], y: &[f64; D]) -> Complex64 {
         
         let temp_r: f64 = euclidean(x, y);
@@ -37,7 +38,8 @@ pub struct Helmholtz { pub wavenumber: f64}
 impl Helmholtz { pub fn new(wavenumber: f64) -> Self { Self {wavenumber}}}
 
 impl<const D: usize> Kernel<D> for Helmholtz {
-
+    
+    #[inline(always)]
     fn eval( &self, x: &[f64; D], y: &[f64; D]) -> Complex64 {
         
         let temp_r: f64 = euclidean(x, y);

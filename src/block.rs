@@ -130,7 +130,6 @@ impl BlockTree {
             let source_index: usize = source_tree.root_id;
 
             let root_id: usize = tree.build_blocks(target_index, source_index, target_tree, source_tree, max_dist);
-
                 
             print!("blocktree succesfully built");
 

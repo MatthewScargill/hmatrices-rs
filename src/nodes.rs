@@ -1,5 +1,11 @@
 use distances::vectors::euclidean;
 
+// need to have D defined at runtime, use this and match function best idea so far
+pub enum DynamicNodes {
+    D2(Nodes<2>),
+    D3(Nodes<3>),
+}
+
 pub struct Nodes<const D: usize> {
     pub points: Vec<[f64; D]>,
     pub len: usize,
