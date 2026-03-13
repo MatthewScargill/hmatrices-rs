@@ -1,6 +1,11 @@
 use hmats_rs::*;
 
 fn main() {
+
+    use std::time::Instant;
+    let now = Instant::now();
+
+
     const D: usize=3; // keeping this around for ease of testing but will kill off like with constructor for all top level functions
     let x = [0.0, 0.0];
     let y = [4.0, 0.0];
@@ -20,7 +25,7 @@ fn main() {
     // ----------- EXAMPLE WORKFLOW - with fixed top level function implementation
 
     // importing points as vector 
-    let ecn = cardioid_nodes(5);
+    let ecn = cardioid_nodes(10);
     // creating dynamic nodes as top level type to interact with top level functions
     let examplenodes = DynamicNodes::D2(Nodes::new(ecn)); // this should be its own function in nodes 
     // what kind of kernel do we fancy 
@@ -46,4 +51,7 @@ fn main() {
 
     testclustertree.print();
 
+
+    let elapsed = now.elapsed();
+    println!("Elapsed: {:.2?}", elapsed);
 }

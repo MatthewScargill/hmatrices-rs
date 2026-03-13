@@ -1,8 +1,5 @@
-use num_complex::Complex64;
 use crate::kernels::Kernel;
 use crate::nodes::{DynamicNodes,Nodes};
-use crate::cluster::{ClusterTree, ClusterNode};
-use crate::block::{BlockTree, BlockType};
 
 
 // ----------- FULL RES CONSTRUCTOR ----------------
@@ -18,10 +15,7 @@ fn fullresconstructorq_impl<const D: usize, K>(nodes: &Nodes<D>, greensfunction:
             let coord2 = nodes.points[j];
             let val = greensfunction.eval(&coord1, &coord2);
 
-            println!(
-                "{}th row, {}th column, cell value = {:?}",
-                i, j, val
-                );
+            println!("{}th row, {}th column, cell value = {:?}", i, j, val);
         }
     }
 }
