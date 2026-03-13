@@ -1,4 +1,4 @@
-use hmats_rs::{cluster::DynamicClusterTree, nodes::DynamicNodes, *};
+use hmats_rs::{nodes::DynamicNodes, *};
 
 fn main() {
     const D: usize=2; //dimension needs to be set early on in computation as a const for openess -- see kenel definition
@@ -19,7 +19,8 @@ fn main() {
 
 
     let cn = cardioid_nodes(5);
-    let card_nodes = DynamicNodes::D2(Nodes::new(cn));
+    // let card_nodes = DynamicNodes::D2(Nodes::new(cn));
+    let card_nodes = Nodes::new(cn);
     
     fn constructor(nodes: &Nodes<D>, greensfunction: impl Kernel<D>) { // accepts anything with Kernel trait
         let len: usize = nodes.len;
@@ -47,22 +48,49 @@ fn main() {
     //println!("centre of the bounding box = {:?}", bboxtest.centre());
 
 
-    fn exampletoplevel(dn: &DynamicNodes, ls: usize) -> DynamicClusterTree{
-        match dn {
+    // ----------- EXAMPLE WORKFLOW
+
+    // importing points as vector 
+    let ecn = cardioid_nodes(5);
+    // creating dynamic nodes as top level type to interact with top level functions
+    let examplenodes = DynamicNodes::D2(Nodes::new(ecn)); // this should be its own function in nodes 
+    // what kind of kernel do we fancy 
+    let kernelfunc = Laplace;
+
+    fn toplevelconstructor(nodes: &DynamicNodes, greensfunction: impl Kernel<D>) {
+        match nodes {
             DynamicNodes::D2(Nodes) => {
-                let tree: ClusterTree<2> = ClusterTree::build_tree(Nodes, 1);
-                DynamicClusterTree::D2(tree)
+                let len: usize = Nodes.len;
+                for i in 0..len as usize {
+                    for j in 0..len as usize {
+                        let coord1 = Nodes.points[i];
+                        let coord2 = Nodes.points[j];
+                        let laptest = greensfunction.eval(&coord1, &coord2);
+                        println!("{}th row, {}th column, cell value = {:?}", i, j, laptest);
+                    }
+                }
             }
+
             DynamicNodes::D3(Nodes) => {
-                let tree: ClusterTree<3> = ClusterTree::build_tree(Nodes, 1);
-                DynamicClusterTree::D3(tree)
+                let len: usize = Nodes.len;
+                for i in 0..len as usize {
+                    for j in 0..len as usize {
+                        let coord1 = Nodes.points[i];
+                        let coord2 = Nodes.points[j];
+                        let laptest = Laplace.eval(&coord1, &coord2);
+                        println!("{}th row, {}th column, cell value = {:?}", i, j, laptest);
+                    }
+                }
             }
         }
     }
-    //let testclustertree: ClusterTree<D> = ClusterTree::build_tree(&card_nodes, 1);
 
-    let testclustertree = exampletoplevel(&card_nodes, 1);
+    toplevelconstructor(&examplenodes, kernelfunc);
 
+    // ----------------------------------
+
+
+    let testclustertree: ClusterTree<D> = ClusterTree::build_tree(&card_nodes, 1);
     let _testblocktree: BlockTree = BlockTree::build_tree(&testclustertree, &testclustertree, 0.4);
 
     testclustertree.print();

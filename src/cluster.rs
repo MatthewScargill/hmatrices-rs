@@ -1,12 +1,5 @@
 use crate::nodes::{Nodes, BBox};
 
-
-pub enum DynamicClusterTree {
-    D2(ClusterTree<2>),
-    D3(ClusterTree<3>),
-}
-
-
 // individual node of the tree containing indices of a fraction of the total nodes
 // relationships between nodes to be kept with each node
 pub struct ClusterNode<const D: usize> {
