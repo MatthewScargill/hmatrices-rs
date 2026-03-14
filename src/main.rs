@@ -1,9 +1,25 @@
 use hmats_rs::*;
 
+
+
+// random plotting function
+use plotters::prelude::*;
+fn plot(points: &[[f64; 2]]) {
+    let root = BitMapBackend::new("plot.png", (800, 800)).into_drawing_area();
+    root.fill(&WHITE).unwrap();
+
+    let mut chart = ChartBuilder::on(&root)
+        .build_cartesian_2d(-2.0..2.0, -2.0..2.0)
+        .unwrap();
+
+    chart.draw_series(
+        points.iter().map(|p| Circle::new((p[0], p[1]), 2, RED.filled()))
+    ).unwrap();
+}
+
+
 fn main() {
 
-    use std::time::Instant;
-    let now = Instant::now();
 
 
     const D: usize=3; // keeping this around for ease of testing but will kill off like with constructor for all top level functions
@@ -23,13 +39,20 @@ fn main() {
     println!("ith node value = {:?}", nodetest.points[2]);
 
     // ----------- EXAMPLE WORKFLOW - with fixed top level function implementation
+    // how much can you reasonably ask from someone using your user
 
     // importing points as vector 
-    let ecn = cardioid_nodes(10);
+    let ecn: Vec<[f64; 2]> = cardioid_nodes(20);
+
+    // maybe a quick plot if we fancy
+    plot(&ecn);
+
     // creating dynamic nodes as top level type to interact with top level functions
     let examplenodes = DynamicNodes::D2(Nodes::new(ecn)); // this should be its own function in nodes 
+
     // what kind of kernel do we fancy 
-    let kernelfunc = Helmholtz{wavenumber:3.0};
+    //let kernelfunc = Helmholtz{wavenumber: 3.0};
+    let kernelfunc = Laplace;
 
     fullresconstructor(&examplenodes, &kernelfunc);
 
@@ -45,6 +68,8 @@ fn main() {
     //println!("min values of the bounding box = {:?}", bboxtest.min);
     //println!("centre of the bounding box = {:?}", bboxtest.centre());
 
+    use std::time::Instant;
+    let now = Instant::now();
 
     let testclustertree: ClusterTree<D> = ClusterTree::build_tree(&nodetest, 1);
     let _testblocktree: BlockTree = BlockTree::build_tree(&testclustertree, &testclustertree, 0.4);
