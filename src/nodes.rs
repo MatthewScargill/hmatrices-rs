@@ -1,30 +1,31 @@
 use distances::vectors::euclidean;
 
-// need to have D defined at runtime, use this and match function best idea so far
+// Ingest enum, match to dimension and run methods with D: const
 pub enum DynamicNodes {
     D2(Nodes<2>),
     D3(Nodes<3>),
 }
 
+// Nodes with dimension D defined at runtime
 pub struct Nodes<const D: usize> {
     pub points: Vec<[f64; D]>,
     pub len: usize,
-    // following is for normal derivative formulation of Helmholtz as and when
+
     // pub weights: Vec<[f64; 1]>,
     // pub normals: Vec<[f64; D]>, 
+    // potentially, for normal derivative Helmholtz formulation
 }
 
 impl<const D: usize> Nodes<D> {
     
-    // create Nodes from "standard" (Vec<[f64; D]>) points
+    // create Nodes from Vec<[f64; D]> 
     pub fn new(points: Vec<[f64; D]>) -> Self {
         assert!(!points.is_empty());
         let len: usize = points.len();
         Self { points, len} 
-        // add method for weights and normals if/when dG implemented
     }
 
-    // creating bounding boxes from indices allows the reuse of Nodes structure instead of storing subdivisions of Nodes.points
+    // main idea: avoid rewrites of Nodes data by reading off from indices
     pub fn bbox_from_indices(&self, indices: &[usize]) -> BBox<D> {
 
         assert!(!indices.is_empty()); 
@@ -42,6 +43,51 @@ impl<const D: usize> Nodes<D> {
         BBox { min, max}
     }
 }
+
+// Bounding boxes used to subdived Nodes (indices) and for distance calculations for block admissibility (see block.rs)
+#[derive(Debug, Clone, Copy)] 
+pub struct BBox<const D: usize> {
+    pub min: [f64; D],      // (x_min, y_min, ...)
+    pub max: [f64; D],      // (x_max, y_max, ...)
+}
+
+impl <const D: usize> BBox<D> {
+
+    // for distance calculation
+    pub fn centre(&self) -> Vec<f64>{ 
+
+        let mut centre: Vec<f64> = Vec::with_capacity(D);
+        let dim: f64 = D as f64;
+
+        for d in 0..D {
+            let centre_i: f64 = (self.min[d] + self.max[d])/ dim ;
+            centre.push(centre_i);
+        }
+        centre 
+    }
+
+    //maybe this should be a &self function or taken out the impl
+    pub fn bbox_distance(source_bbox: &BBox<D>, target_bbox: &BBox<D>) -> f64 {
+        
+        let source_centre: Vec<f64> = source_bbox.centre();
+        let target_centre: Vec<f64> = target_bbox.centre();
+        let distance: f64 = euclidean(&source_centre, &target_centre);
+
+        distance
+    }
+
+    // i have in fact forgotten what this was for 
+    pub fn prox_dims(&self) -> Vec<f64> {
+        let mut test = Vec::new();
+        test.push(2.3);
+        test.push(1.2);
+        test
+    }
+}
+
+
+// don't mind this i'm working on unit tests, the plan is currently create randomized data and see if it throws errors 
+// and keeps precision between full construction and hmat 
 
 // this template can be used across all files
 #[cfg(test)] // don't compile at runtime
@@ -63,43 +109,4 @@ mod node_struct_test { // all need different names for each struct
     }
 
     // add more tests here
-}
-
-
-// Bounding boxes are used to subdivide Nodes and later provide notion of distance for admissibility in block.rs
-#[derive(Debug, Clone, Copy)] 
-pub struct BBox<const D: usize> {
-    pub min: [f64; D], // (x_min, y_min, ...)
-    pub max: [f64; D], // (x_max, y_max, ...)
-}
-
-impl <const D: usize> BBox<D> {
-
-    pub fn centre(&self) -> Vec<f64>{ 
-
-        let mut centre: Vec<f64> = Vec::with_capacity(D);
-        let dim: f64 = D as f64;
-
-        for d in 0..D {
-            let centre_i: f64 = (self.min[d] + self.max[d])/ dim ;
-            centre.push(centre_i);
-        }
-        centre 
-    }
-
-    pub fn prox_dims(&self) -> Vec<f64> {
-        let mut test = Vec::new();
-        test.push(2.3);
-        test.push(1.2);
-        test
-    }
-
-    pub fn bbox_distance(source_bbox: &BBox<D>, target_bbox: &BBox<D>) -> f64 {
-        
-        let source_centre: Vec<f64> = source_bbox.centre();
-        let target_centre: Vec<f64> = target_bbox.centre();
-        let distance: f64 = euclidean(&source_centre, &target_centre);
-
-        distance
-    }
 }

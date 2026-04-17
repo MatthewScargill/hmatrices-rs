@@ -18,11 +18,11 @@ pub enum BlockType {
 
  // source and target will later translate to column and row 
 pub struct BlockNode{
-    pub target_index: usize, // index of Cluster node in target Ctree
-    pub source_index: usize, // index of Cluster node in source Ctree
-    pub children: Option<Vec<usize>>, // normally another node but use Option as could be None
+    pub target_index: usize,            // index of Cluster node in target Ctree
+    pub source_index: usize,            // index of Cluster node in source Ctree
+    pub children: Option<Vec<usize>>,   // normally another node but use Option as could be None
     // the above is going to take some sorting but this is the idea
-    pub block_type: BlockType // assigned to leaf blocks 
+    pub block_type: BlockType           // assigned to leaf blocks 
 }
 
 pub struct BlockTree {
