@@ -1,24 +1,5 @@
 use hmats_rs::*;
 
-// random plotting function
-use plotters::prelude::*;
-fn plot(points: &[[f64; 2]]) {
-    let root = BitMapBackend::new("plot.png", (800, 800)).into_drawing_area();
-    root.fill(&WHITE).unwrap();
-
-    let mut chart = ChartBuilder::on(&root)
-        .build_cartesian_2d(-2.0..2.0, -2.0..2.0)
-        .unwrap();
-
-    chart
-        .draw_series(
-            points
-                .iter()
-                .map(|p| Circle::new((p[0], p[1]), 2, RED.filled())),
-        )
-        .unwrap();
-}
-
 fn main() {
     use std::time::Instant;
     let now = Instant::now();

@@ -1,5 +1,5 @@
-use crate::kernels::Kernel;
-use crate::nodes::Nodes;
+// use crate::kernels::Kernel;
+// use crate::nodes::Nodes;
 // use crate::cluster::{ClusterTree, ClusterNode};
 // use crate::block::{BlockTree, BlockType};
 
@@ -28,4 +28,24 @@ pub fn cardioid_nodes(n: usize) -> Vec<[f64; 2]> {
         pts.push([x, y]);
     }
     pts
+}
+
+
+// random plotting function
+use plotters::prelude::*;
+pub fn plot(points: &[[f64; 2]]) {
+    let root = BitMapBackend::new("plot.png", (800, 800)).into_drawing_area();
+    root.fill(&WHITE).unwrap();
+
+    let mut chart = ChartBuilder::on(&root)
+        .build_cartesian_2d(-2.0..2.0, -2.0..2.0)
+        .unwrap();
+
+    chart
+        .draw_series(
+            points
+                .iter()
+                .map(|p| Circle::new((p[0], p[1]), 2, RED.filled())),
+        )
+        .unwrap();
 }

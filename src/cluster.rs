@@ -1,17 +1,18 @@
 use crate::nodes::{Nodes, BBox};
 
-// individual node of the tree containing indices of a fraction of the total nodes
-// relationships between nodes to be kept with each node
+// individual node of the tree containing indices of a slice of the total nodes
+// children stored with each node, overall structure can be determined from index layout and associated level
 pub struct ClusterNode<const D: usize> {
-    pub bbox: BBox<D>,
-    pub indices: Vec<usize>,  // indices into Nodes.points
-    pub children: Option<[usize; 2]>, // indices into ClusterTree.nodes or None
-    pub level: u32, // how many splits have we had to this box? 0 = root bbox
+    pub bbox: BBox<D>,                      // associated BBox
+    pub indices: Vec<usize>,                // indices into Nodes.points
+    pub children: Option<[usize; 2]>,       // indices into ClusterTree.nodes or None
+    pub level: u32,                         // how many splits have we had to this box? 0 = root bbox
 }
 
+// will serve as map for Blocktree
 pub struct ClusterTree<const D: usize> {
-    pub nodes: Vec<ClusterNode<D>>,
-    pub root_id: usize // index of root ClusterNode (len(.nodes)-1)
+    pub nodes: Vec<ClusterNode<D>>,         // full Vector of nodes
+    pub root_id: usize                      // index of root ClusterNode (len(.nodes)-1)
 }
 
 impl<const D: usize> ClusterTree<D> {
@@ -22,7 +23,7 @@ impl<const D: usize> ClusterTree<D> {
         // create a bounding box of given indices 
         let bbox: BBox<D> = nodes.bbox_from_indices(&indices); // will break if indices empty, see Nodes impl
 
-        // check if alrady contains max number of points  -> terminate branch (== leaf node)
+        // check if already contains max number of points  -> terminate branch (== leaf node)
         if indices.len() <= leaf_size {
             let root_id: usize = self.nodes.len();
             self.nodes.push( ClusterNode{ bbox, indices, children: None, level});
@@ -39,7 +40,7 @@ impl<const D: usize> ClusterTree<D> {
             .unwrap();
 
         // directly sort indices as no need for them to be unsorted later on -- saves allocation but indices has to be mutable
-        // if the longest dim is the same across iteration unecessary but honestly that's splitting hairs
+        // unecessary if the longest dim is the same across iteration but honestly that's splitting hairs
         indices.sort_by(|&i, &j| {
             nodes.points[i][longest_dim] // sort indices along longest_dim
                 .partial_cmp(&nodes.points[j][longest_dim]) // comparing i against j indices
@@ -49,8 +50,8 @@ impl<const D: usize> ClusterTree<D> {
 
         // bisect around mid
         let mid: usize = indices.len() / 2;
-        let left_indices: Vec<usize> = indices[..mid].to_vec();
-        let right_indices: Vec<usize> = indices[mid..].to_vec();
+        let left_indices: Vec<usize> = indices[..mid].to_vec(); // or top or close
+        let right_indices: Vec<usize> = indices[mid..].to_vec(); // or bottom or far
 
         // recursion to build children bboxes, from left and right indices
         let left_id: usize = self.build_nodes(nodes, left_indices, level + 1, leaf_size);
